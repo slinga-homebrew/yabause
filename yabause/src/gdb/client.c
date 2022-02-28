@@ -62,6 +62,10 @@ void gdb_client_received(gdb_client * client, gdb_packet * packet)
          gdb_client_send(client, "l", 1);
       else if (!strncmp(packet->buffer, "qTsP", 8))
          gdb_client_send(client, "l", 1);
+      else if (!strncmp(packet->buffer, "qfThreadInfo", 12))
+         gdb_client_send(client, "m0", 2);
+      else if (!strncmp(packet->buffer, "qsThreadInfo", 12))
+         gdb_client_send(client, "l", 1);
    }
    else if (packet->buffer[0] == 'm')
    {
