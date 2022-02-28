@@ -57,11 +57,11 @@ void gdb_client_received(gdb_client * client, gdb_packet * packet)
       else if (!strncmp(packet->buffer, "qTStatus", 8))
          gdb_client_send(client, "T0", 2);
       else if (!strncmp(packet->buffer, "qTfP", 8))
-         gdb_client_send(client, "", 0);
+         gdb_client_send(client, "l", 1);
       else if (!strncmp(packet->buffer, "qTfV", 8))
-         gdb_client_send(client, "", 0);
+         gdb_client_send(client, "l", 1);
       else if (!strncmp(packet->buffer, "qTsP", 8))
-         gdb_client_send(client, "", 0);
+         gdb_client_send(client, "l", 1);
    }
    else if (packet->buffer[0] == 'm')
    {
@@ -104,6 +104,8 @@ void gdb_client_received(gdb_client * client, gdb_packet * packet)
    {
       if (!strncmp(packet->buffer, "vCont?", 6))
          gdb_client_send(client, "", 0);
+      else if(!strncmp(packet->buffer, "vMustReplyEmpty", 15))
+         gdb_client_send(client, "", 0);
    }
    else if (packet->buffer[0] == 's')
       gdb_client_step(client);
@@ -128,6 +130,12 @@ void gdb_client_received(gdb_client * client, gdb_packet * packet)
          SH2DelCodeBreakpoint(client->context, addr);
       }
       gdb_client_send(client, "OK", 2);
+   }
+   else if (packet->buffer[0] == 'D') /* disconnect */
+   {
+       // YabSockCloseSocket: Closes previously opened socket.
+       // Returns 0 on success. -1 on error.
+       YabSockCloseSocket(client->sock);
    }
 }
 
